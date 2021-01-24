@@ -1,0 +1,4 @@
+.env
+.env.test
+
+/blog_api/node_modules
