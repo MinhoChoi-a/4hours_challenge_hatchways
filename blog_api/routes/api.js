@@ -1,65 +1,20 @@
 var express = require('express');
 var router = express.Router();
-var axios = require('axios');
 
-var api_util = require('../public/util');
+const PING_DATA = require('../controllers/PingControl');
+const POSTS_DATA = require('../controllers/PostsControl');
 
-/* GET home page. */
-router.get('/ping', function(req, res, next) {
-  
-  var ping_path = api_util.ping_data();
+const CACHE = require('../util/cache')
 
-  axios.get(ping_path)
-    .then((response) => {
-        
-      var success = {success : true};
-      
-      res.json(success);
-
-    })
-    .catch((error) => 
-        console.log("error")
-    );
-    
+//root url '/api'
+router.get('/', function(req, res, next) {
+  res.send('Coding Test - BACKEND API');
 });
 
+//route for 'ping'
+router.get('/ping', PING_DATA.post_ping);
 
-router.get('/posts', function(req, res, next) {
-
-  /**
-  var sort = req.params.
-  var direc = req.params. 
-  var tag = req.params.
-  
-
-  if(req.params.tag == null) {
-    
-    res.statusCode = 400;
-    res.json({error: "Tag parameter is required"});
-
-  }
-
-  else { */
-
-  var tag = "tech";
-  var sort = "popularity";
-  var direc = "desc";
-
-  var axios_path = api_util.posts_data(tag, sort, direc);
-  
-  axios.get(axios_path)
-    .then((response) => {
-      res.json(response.data.posts);
-    })
-    .catch((error) => 
-    console.log("error")
-    );
-
-  }
-
-//}
-);
-
-
+//route for 'get data'
+router.get('/posts', CACHE.cache(10), POSTS_DATA.data_get);
 
 module.exports = router;
